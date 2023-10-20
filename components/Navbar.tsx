@@ -1,9 +1,46 @@
-import { NAV_LINKS } from "@/constants"
-import Image from "next/image"
-import Link from "next/link"
-import Button from "./Button"
+"use client"
+
+import { useSession, getProviders, signIn, SignInResponse } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+import { NAV_LINKS } from "@/constants";
+import Button from "./Button";
+
+type ButtonProps = {
+  // ... your other prop definitions ...
+  type: 'button' | 'submit' | 'reset';
+  title: string;
+  variant: string;
+  icon?: string;
+  onClick?: () => void;
+};
+
+type ClientSafeProvider = {
+  name: string;
+  id: string;
+  //... other properties
+};
+
+type ProviderList = Record<string, ClientSafeProvider>;
 
 const Navbar = () => {
+  const { data: session } = useSession();
+  const [providers, setProviders] = useState<ProviderList | null>(null);
+
+  console.log('Providers:', providers);
+
+  useEffect(() => {
+    const setUpProviders = async () => {
+      const response = await getProviders();
+      if (response) {
+        setProviders(response);
+      }
+    };
+    setUpProviders();
+  }, []);
+
   return (
     <nav className="flexBetween max-container padding-container relative z-30 py-5">
       <Link href="/">
@@ -19,12 +56,19 @@ const Navbar = () => {
       </ul>
 
       <div className="lg:flexCenter hidden">
-        <Button 
-          type="button"
-          title="Login"
-          icon="/user.svg"
-          variant="btn_dark_green"
-        />
+        {session?.user ? (
+          <Image src={session.user.image ?? "/default-avatar.png"} width={37} height={37} className="rounded-full" alt="profile" />
+        ) : (
+          providers && Object.values(providers).map(provider => (
+            <Button
+              key={provider.id}
+              type="button"
+              title={`Sign in`}
+              onClick={() => signIn(provider.id)}
+              variant="btn_dark_green"
+            />
+          ))
+        )}
       </div>
 
       <Image 
@@ -35,7 +79,7 @@ const Navbar = () => {
         className="inline-block cursor-pointer lg:hidden"
       />
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

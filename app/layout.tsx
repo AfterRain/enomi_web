@@ -3,6 +3,8 @@ import React from 'react';
 import './globals.css'
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Provider from '@/components/Provider';
+
 
 export const metadata: Metadata = {
   title: 'Travel',
@@ -11,15 +13,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  session,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
+  session: any; // Ideally, you'd type this better, maybe using Session from 'next-auth'.
 }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-          {children}
-        <Footer />
+        <Provider session={session}>
+          <Navbar />
+            {children}
+          <Footer />
+        </Provider>
       </body>
     </html>
   )
