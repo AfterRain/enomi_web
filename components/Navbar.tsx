@@ -7,15 +7,7 @@ import { useEffect, useState } from 'react';
 
 import { NAV_LINKS } from "@/constants";
 import Button from "./Button";
-
-type ButtonProps = {
-  // ... your other prop definitions ...
-  type: 'button' | 'submit' | 'reset';
-  title: string;
-  variant: string;
-  icon?: string;
-  onClick?: () => void;
-};
+import SignInButton from './SignInButton';
 
 type ClientSafeProvider = {
   name: string;
@@ -54,7 +46,32 @@ const Navbar = () => {
           </Link>
         ))}
       </ul>
+      
+      
+      <div className="lg:flexCenter hidden">
+        {session?.user ? (
 
+          <SignInButton 
+            type="button"
+            title={`Sign in`}
+            variant="btn_dark_green"
+          />
+          
+        ) : (
+          providers && Object.values(providers).map(provider => (
+            <Button 
+                type="button"
+                title="Sign in"
+                variant="btn_dark_green"
+                onClick={() => signIn()}
+            />
+          ))
+        )}
+
+        
+      </div>
+        
+      {/* 
       <div className="lg:flexCenter hidden">
         {session?.user ? (
           <Image src={session.user.image ?? "/default-avatar.png"} width={37} height={37} className="rounded-full" alt="profile" />
@@ -70,7 +87,8 @@ const Navbar = () => {
           ))
         )}
       </div>
-
+      */}
+      
       <Image 
         src="menu.svg"
         alt="menu"

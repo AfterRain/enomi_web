@@ -7,8 +7,8 @@ import Provider from '@/components/Provider';
 
 
 export const metadata: Metadata = {
-  title: 'Travel',
-  description: 'Travel UI/UX App for Camping',
+  title: 'Welcome to Enomi',
+  description: 'Innovate Your AI searching features',
 }
 
 export default function RootLayout({
