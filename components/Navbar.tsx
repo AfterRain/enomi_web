@@ -1,9 +1,8 @@
 "use client"
 
-import { useSession, getProviders, signIn, SignInResponse } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 import { NAV_LINKS } from "@/constants";
 import Button from "./Button";
@@ -18,25 +17,58 @@ type ClientSafeProvider = {
 type ProviderList = Record<string, ClientSafeProvider>;
 
 const Navbar = () => {
-  const { data: session } = useSession();
-  const [providers, setProviders] = useState<ProviderList | null>(null);
+  const { data: session,status } = useSession();
 
-  console.log('Providers:', providers);
+  const renderAuthButton = () => {
+    if (status === "loading") return null; // Or a loading spinner/icon if desired
+    if (status === "authenticated") {
+      return (
+        <SignInButton 
+          type="button"
+          title={`Sign in`}
+          variant="btn_dark_green"
+        />
+      );
+    }
+    if (status === "unauthenticated") {
+      return (
+        <Button 
+          type="button"
+          title="Sign in"
+          variant="btn_dark_green"
+          onClick={() => signIn()}
+        />
+      );
+    }
+  }
 
+  //const [providers, setProviders] = useState<ProviderList | null>(null);
+
+  /*
   useEffect(() => {
     const setUpProviders = async () => {
-      const response = await getProviders();
-      if (response) {
-        setProviders(response);
+      try {
+        const response = await getProviders();
+        if (response) {
+          setProviders(response);
+        } else {
+          console.error("Received null from getProviders");
+        }
+      } catch (error) {
+        console.error("Error fetching providers:", error);
       }
     };
     setUpProviders();
   }, []);
+  */
 
+  //console.log('Providers:', providers);
+  
   return (
     <nav className="flexBetween max-container padding-container relative z-30 py-5">
       <Link href="/">
-        <Image src="/hilink-logo.svg" alt="logo" width={74} height={29} />
+        {/*<Image src="/logo/enomi_nav_3.png" alt="logo" width={74} height={29} />*/}
+        <Image src="/logo/enomi_nav_3.png" alt="logo" width={100} height={100} />
       </Link>
 
       <ul className="hidden h-full gap-12 lg:flex">
@@ -46,29 +78,10 @@ const Navbar = () => {
           </Link>
         ))}
       </ul>
-      
-      
-      <div className="lg:flexCenter hidden">
-        {session?.user ? (
 
-          <SignInButton 
-            type="button"
-            title={`Sign in`}
-            variant="btn_dark_green"
-          />
           
-        ) : (
-          providers && Object.values(providers).map(provider => (
-            <Button 
-                type="button"
-                title="Sign in"
-                variant="btn_dark_green"
-                onClick={() => signIn()}
-            />
-          ))
-        )}
-
-        
+      <div className="lg:flexCenter hidden">
+        {renderAuthButton()}
       </div>
         
       {/* 

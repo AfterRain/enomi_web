@@ -4,17 +4,29 @@
 import { ReactElement } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-
 import ButtonGeneral from './ButtonGeneral'
 
 const GoogleSignInButton = (): ReactElement => {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? undefined
 
+  const handleSignIn = async () => {
+    try {
+
+
+        // After successful Firebase authentication, proceed with next-auth signIn
+        // You might want to modify this logic based on your needs
+        await signIn('google', { callbackUrl, prompt: 'select_account' });
+
+    } catch (error) {
+        console.error('Error during sign-in:', error);
+    }
+  };
+
   return (
     <ButtonGeneral
       className='w-full'
-      onClick={() => signIn('google', { callbackUrl })}
+      onClick={handleSignIn}
     >
       <svg
         aria-hidden='true'

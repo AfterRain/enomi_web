@@ -40,3 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 npm install bcrypt mongodb mongoose next-auth
 npm install @headlessui/react clsx
 npm install @heroicons/react
+npm install firebase
+npm install encoding
+npm install @next-auth/firebase-adapter
+npm install firebase-admin
