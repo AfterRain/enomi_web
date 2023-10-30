@@ -19,8 +19,12 @@ type ProviderList = Record<string, ClientSafeProvider>;
 const Navbar = () => {
   const { data: session,status } = useSession();
 
+  const LoadingSpinner = () => {
+    return <div className="spinner"></div>;
+  };
+  
   const renderAuthButton = () => {
-    if (status === "loading") return null; // Or a loading spinner/icon if desired
+    if (status === "loading") return <LoadingSpinner />;  // Or a loading spinner/icon if desired
     if (status === "authenticated") {
       return (
         <SignInButton 
